@@ -1,0 +1,14 @@
+@using AppMvc.Net.Models
+@model AppMvc.Net.Models.ProductModel
+@{
+    var product = ViewBag.product as ProductModel;
+}
+<p>@ViewData["title"]</p>
+<div class="card bg-danger text-white">
+    <h1 class="card-header">@product.Name</h1>
+    <div class="card-body">
+        <p class="card-text">
+            Gia: @product.Price
+        </p>
+    </div>
+</div>
