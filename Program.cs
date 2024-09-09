@@ -1,5 +1,8 @@
+using System.Net;
+using AppMvc.Net.ExtendMethods;
 using AppMvc.Net.Services;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,21 +39,59 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseStatusCodePages(); // la 1 middleware tao response tu loi 400  - 599
+app.AddStatusCodePage();
+//  app.UseStatusCodePages(appError => {
+//     appError.Run(async context => {
+//         var response = context.Response;
+//         var code = response.StatusCode;
+//       //var content = "loi";
+//         var content = @$"<html>
+//         <head>
+//             <meta charset='UTF-8'/>
+//             <title></title>
+//         </head>
+//         <body>
+//             <p style='color:red; font-size: 30px'>
+//                 Co loi xay ra: {code} - {(HttpStatusCode)code}
+//             </p>
+//         </body>
+//         </html";
+//         await response.WriteAsync(content);
+//     });
+// });
 app.UseRouting();
 
 app.UseAuthorization();
 app.MapRazorPages();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-// app.UseEndpoints(endpoints => {
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Home}/{action=Index}/{id?}");
+// app.UseEndpoints(endpoints => { //tao endpoint theo cach viet cu
 //     endpoints.MapControllerRoute(
 //     name: "default",
 //     pattern: "{controller=Home}/{action=Index}/{id?}");
 //     endpoints.MapRazorPages();
-
 // });
+//Tao endpoint
+app.MapGet("/sayhi", async context => {
+   await  context.Response.WriteAsync("Xin chao day la say hi");
+});
+// app.MapControllers
+// app.MapControllerRoute
+// app.MapDefaultControllerRoute
+// app.MapAreaControllerRoute
+app.MapControllerRoute(
+    name: "default",
+    pattern: "start-here/{controller=Home}/{action=Index}/{id?}"
 
+    //pattern: "start-here/{controller}/{action}/{id?}"
 
+    // pattern: "start-here/{id}",
+    // defaults: new {
+    //     controller = "First",
+    //     action = "ViewProduct",
+    //     id = 3
+    // }
+);
 app.Run();

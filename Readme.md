@@ -19,3 +19,16 @@
 -ViewData
 -ViewBag
 -TempData
+
+#Day code len github
+- tao 1 repository tren trang github cua ban
+- trong visual studio code tren man hinh terminal thu hien cac lenh 
+   + dotnet new gitignore de tao file .gitignore
+   + git init để khởi tạo 1 kho chứa git
+   + git add . đánh chỉ mục tất các các file cần theo dõi
+   + git commit -m "Creat AppMVC"
+   + git status (kiem tra trang thai hien tai nhanh hien tai dang la master)
+   + git branch B1 (tao 1 nhanh moi B1) 
+   + git branch (ktra xem co bao nhieu nhanh )
+   + git remote add origin https://github.com/havv/AppMVC.Net.git (thực hiện liên kết kho chứa ở local và ở remote)
+   + git push --all (đẩy toàn bộ các nhánh lên github)
