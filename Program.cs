@@ -1,8 +1,11 @@
 using System.Net;
 using AppMvc.Net.ExtendMethods;
 using AppMvc.Net.Services;
+using AppMVC.Net.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,7 @@ builder.Services.AddRazorPages();
 //builder.Services.AddSingleton<ProductService, ProductService>();
 //builder.Services.AddSingleton(typeof(ProductService));
 builder.Services.AddSingleton(typeof(ProductService), typeof(ProductService));
-
+builder.Services.AddSingleton<PlanetService>();
 
 //Thiet lap cau hinh cho razor engine 
 builder.Services.Configure<RazorViewEngineOptions>(options =>{
@@ -39,8 +42,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseStatusCodePages(); // la 1 middleware tao response tu loi 400  - 599
-app.AddStatusCodePage();
+//app.UseStatusCodePages(); // la 1 middleware tao response tu loi 400  - 599
+app.AddStatusCodePage(); //Tùy biến cho response từ lỗi 400 -599 
+//Tùy biến thêm nội dung trả về của UseStatusCodePages
 //  app.UseStatusCodePages(appError => {
 //     appError.Run(async context => {
 //         var response = context.Response;
@@ -67,23 +71,69 @@ app.MapRazorPages();
 // app.MapControllerRoute(
 //     name: "default",
 //     pattern: "{controller=Home}/{action=Index}/{id?}");
-// app.UseEndpoints(endpoints => { //tao endpoint theo cach viet cu
+
+//tao endpoint theo cach viet cu
+// app.UseEndpoints(endpoints => { 
+//     endpoints.MapGet("/sayhi", async context => {
+//      await  context.Response.WriteAsync("Xin chao day la say hi");
+//     });
 //     endpoints.MapControllerRoute(
 //     name: "default",
 //     pattern: "{controller=Home}/{action=Index}/{id?}");
 //     endpoints.MapRazorPages();
 // });
+
 //Tao endpoint
 app.MapGet("/sayhi", async context => {
    await  context.Response.WriteAsync("Xin chao day la say hi");
 });
+//Cac phương thức ánh xạ url vào controller
 // app.MapControllers
 // app.MapControllerRoute
 // app.MapDefaultControllerRoute
 // app.MapAreaControllerRoute
 app.MapControllerRoute(
+    name: "first",
+    //pattern:"xemsanpham/{id?}", //xemsanpham/1
+    pattern:"{url:regex(^((xemsanpham)|(viewproduct))$)}/{id:range(2,4)}", //abcanything/1
+    defaults : new {
+        controller = "First",
+        action = "ViewProduct"
+
+    }
+    //thiết lập ràng buộc của tham số
+    // constraints: new {
+    //     //url = new StringRouteConstraint("xemsanpham")
+    //     //url = "xemsanpham",
+    //     url = new RegexRouteConstraint(@"^((xemsanpham)|(viewproduct))$"),
+    //     id =  new RangeRouteConstraint(2,4)
+
+
+    // }
+    //IRouteConstraint
+    //new StringRouteConstraint("xemsanpham")
+);
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "start-here/{controller=Home}/{action=Index}/{id?}"
+
+//     //pattern: "start-here/{controller}/{action}/{id?}"
+
+//     // pattern: "start-here/{id}",
+//     // defaults: new {
+//     //     controller = "First",
+//     //     action = "ViewProduct",
+//     //     id = 3
+//     // }
+// );
+app.MapAreaControllerRoute(
+    name:"product",
+    pattern: "/{controller}/{action=Index}/{id?}",
+    areaName:"ProductManage"
+);
+app.MapControllerRoute(
     name: "default",
-    pattern: "start-here/{controller=Home}/{action=Index}/{id?}"
+    pattern: "/{controller=Home}/{action=Index}/{id?}"
 
     //pattern: "start-here/{controller}/{action}/{id?}"
 
@@ -94,4 +144,14 @@ app.MapControllerRoute(
     //     id = 3
     // }
 );
+
+//Thiết lập các attribute cho các controller 
+//[AcceptVerbs]
+//[Route]
+// [HttpGet]
+// [HttpPost]
+// [HttpPut]
+// [HttpDelete]
+// [HttpPatch]
+// [HttpHead]
 app.Run();

@@ -6,3 +6,44 @@
     <h1 class="display-4">Xin chao</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<p>
+    @Url.ActionLink()
+</p>
+<p>
+    @Url.Action()
+</p>
+<p>
+    @Url.Action("Privacy", new {id = 123, name = "XuanThuLab"})
+</p>
+<p>
+    @Url.Action("Jupiter", "Planet")
+</p>
+<p>
+    @Url.Action("PlanetInfo", "Planet", new {id=3})
+</p>
+
+<p>
+    @Url.Action("Index", "Product", new { area = "ProductManage", id = 123})
+</p>
+<p>
+    @Url.RouteUrl("default", new {action = "HelloView", controller = "Home", id = 123, name = "XuanThuLab"})
+</p>
+<p>
+    @Url.RouteUrl("neptune2")
+</p>
+<a asp-action="ViewProduct" asp-controller="First">Vi du 1</a>
+<a asp-action="PlanetInfo" asp-controller="Planet" asp-route-id= "3">vi du 2</a>
+<a asp-action="PlanetInfo" asp-controller="Planet" asp-route-id= "3" asp-route-name = "xuanthulab" asp-route-abc="xyz">vi du 3</a>
+@{
+    var routedata = new Dictionary<string,string>(){
+        {"name", "xuanthulab"}, {"abc", "xyz"},{"id", "3"}
+        };
+}
+<a asp-action="PlanetInfo" asp-controller="Planet" asp-all-route-data="@routedata">vi du 4</a>
+<a asp-action="PlanetInfo" asp-controller="Planet" asp-all-route-data='new Dictionary<string,string>(){
+        {"name", "xuanthulab"}, {"abc", "xyz"},{"id", "3"}
+        };'>vi du 5</a>
+<a asp-action="Index" asp-controller="Product" asp-area="ProductManage" asp-all-route-data='new Dictionary<string,string>(){
+        {"name", "xuanthulab"}, {"abc", "xyz"},{"id", "3"}
+        };'>vi du 6</a>

@@ -32,3 +32,20 @@
    + git branch (ktra xem co bao nhieu nhanh )
    + git remote add origin https://github.com/havv/AppMVC.Net.git (thực hiện liên kết kho chứa ở local và ở remote)
    + git push --all (đẩy toàn bộ các nhánh lên github)
+
+#Cài đặt tool generator
+ + dotnet tool install -g dotnet-aspnet-codegenerator (cài đặt công cụ codegenerator)
+ + dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design (add package)
+ + dotnet aspnet-codegenerator -h (Gõ lệnh để xem hướng dẫn)
+ + dotnet aspnet-codegenerator controller -name ProductController -namespace AppMvc.Net.Controllers -outDir Controllers (tạo controller)
+
+#Area để thiết lập controller thuộc về 1 vùng nào đó
+- tên area được dùng để thiết lập routing
+- Là cấu trúc thư mục chứa MVC (dễ quản lý hơn)
+- Thiết lập area cho controller  [Area("AreaName")]
+- Tạo cấu trúc thư mục dotnet asp-codegenerator area Product
+
+#Phát sinh các url (xem ví dụ trong file index của home)
+-Url.ActionLink() Url.Action() sử dụng action để sinh ra url
+- Url.RouteUrl() Url.Link() sử dụng tên route để sinh ra url
+- <a> <form> <button>

@@ -1,0 +1,12 @@
+@using AppMvc.Net.Models
+@model List<ProductModel>
+@{
+    Layout = "_Layout";
+}
+<h1>Danh sách các sản phẩm</h1>
+<ul>
+    @foreach(var product in @Model)
+    {
+        <li>@product.Name</li>
+    }
+</ul>
