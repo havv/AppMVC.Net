@@ -49,3 +49,29 @@
 -Url.ActionLink() Url.Action() sử dụng action để sinh ra url
 - Url.RouteUrl() Url.Link() sử dụng tên route để sinh ra url
 - <a> <form> <button>
+
+#Tích hợp Entity Framework và các công cụ phát sinh code
+dotnet tool install --global dotnet-ef
+dotnet tool install --global dotnet-aspnet-codegenerator
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package MySql.Data.EntityFramework
+
+#Docker với sql
+- Chạy SQL Server trên docker chạy lệnh ở thư mục chứa docker-compose.yml
+- chạy dịch vụ docker-compose up -d
+- khởi động nếu dịch vụ bị dừng docker-compose start
+- xóa dịch vụ docker-compose down 
+- ktra container đang chạy docker ps
+
+#Dùng migration để tạo cơ sở dữ liệu
+- dotnet ef migrations add Init (tạo migration đầu tiên)
+- dotnet ef database update
+- Xem thêm code trong thư mục Areas/Database
+
+#Thiết lập cấu hình log information khi chạy ứng dụng sẽ xuất hiện thông tin trên màn hình terminal
+- Thêm các thông tin muốn log vào file appsetting.json 
+ + ví dụ "Microsof.EntityFrameworkCore.Query" : "Information"
+         "Microsof.EntityFrameworkCore.Database.Command" : "Information"
+   tham khảo thêm xem thêm thông tin simple logging entity framework Message categories

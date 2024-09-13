@@ -1,15 +1,21 @@
+using System.Configuration;
 using System.Net;
 using AppMvc.Net.ExtendMethods;
+using AppMvc.Net.Models;
 using AppMvc.Net.Services;
 using AppMVC.Net.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Constraints;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+ builder.Services.AddDbContext<AppDbContext>(options => {
+                string connectString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
+                options.UseSqlServer(connectString);
+            });
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 //builder.Services.AddTransient(typeof(ILogger<>),typeof(Logger<>)); mac dinh logger da dc add nen k can lenh nay neu muon su dung dich vu log cua ben thu 3 thi chi can sua phuong thuc nay vd Serilog ma k can sua o trong controller
