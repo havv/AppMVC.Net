@@ -30,7 +30,7 @@ namespace AppMvc.Net.Models
 
         }
 
-        
+        public DbSet<ContactModel> Contacts  { get; set; }
 
     }
 }
