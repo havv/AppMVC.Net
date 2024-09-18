@@ -4,6 +4,7 @@ using AppMvc.Net.ExtendMethods;
 using AppMvc.Net.Models;
 using AppMvc.Net.Services;
 using AppMVC.Net.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,10 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
- builder.Services.AddDbContext<AppDbContext>(options => {
-                string connectString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
-                options.UseSqlServer(connectString);
-            });
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    string connectString = builder.Configuration.GetConnectionString("AppMvcConnectionString");
+    options.UseSqlServer(connectString);
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 //builder.Services.AddTransient(typeof(ILogger<>),typeof(Logger<>)); mac dinh logger da dc add nen k can lenh nay neu muon su dung dich vu log cua ben thu 3 thi chi can sua phuong thuc nay vd Serilog ma k can sua o trong controller
@@ -25,15 +27,75 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton(typeof(ProductService), typeof(ProductService));
 builder.Services.AddSingleton<PlanetService>();
 
+// Dang ky Identity
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
+// Truy cập IdentityOptions
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Thiết lập về Password
+    options.Password.RequireDigit = false; // Không bắt phải có số
+    options.Password.RequireLowercase = false; // Không bắt phải có chữ thường
+    options.Password.RequireNonAlphanumeric = false; // Không bắt ký tự đặc biệt
+    options.Password.RequireUppercase = false; // Không bắt buộc chữ in
+    options.Password.RequiredLength = 3; // Số ký tự tối thiểu của password
+    options.Password.RequiredUniqueChars = 1; // Số ký tự riêng biệt
+
+    // Cấu hình Lockout - khóa user
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Khóa 5 phút
+    options.Lockout.MaxFailedAccessAttempts = 3; // Thất bại 3 lầ thì khóa
+    options.Lockout.AllowedForNewUsers = true;
+
+    // Cấu hình về User.
+    options.User.AllowedUserNameCharacters = // các ký tự đặt tên user
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = true;  // Email là duy nhất
+
+
+    // Cấu hình đăng nhập.
+    options.SignIn.RequireConfirmedEmail = true;            // Cấu hình xác thực địa chỉ email (email phải tồn tại)
+    options.SignIn.RequireConfirmedPhoneNumber = false;     // Xác thực số điện thoại
+    options.SignIn.RequireConfirmedAccount = true;
+
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/login/";
+    options.LogoutPath = "/logout/";
+    options.AccessDeniedPath = "/khongduoctruycap.html";
+});
+
+builder.Services.AddAuthentication()
+       .AddGoogle(options =>
+       {
+           var gconfig = builder.Configuration.GetSection("Authentication:Google");
+           options.ClientId = gconfig["ClientId"];
+           options.ClientSecret = gconfig["ClientSecret"];
+           // https://localhost:5001/signin-google
+           options.CallbackPath = "/dang-nhap-tu-google";
+       })
+       .AddFacebook(options =>
+       {
+           var fconfig = builder.Configuration.GetSection("Authentication:Facebook");
+           options.AppId = fconfig["AppId"];
+           options.AppSecret = fconfig["AppSecret"];
+           options.CallbackPath = "/dang-nhap-tu-facebook";
+       })
+       // .AddTwitter()
+       // .AddMicrosoftAccount()
+       ;
 //Thiet lap cau hinh cho razor engine 
-builder.Services.Configure<RazorViewEngineOptions>(options =>{
-   // Mac dinh se tim view o /Views/Controller/Action.cshtml
-   //Thiet lap them  /MyView/Controller/Action.cshtml
-   //{0} -> ten Action 
-   //{1} -> ten Controller
-   //{2} -> ten Area
-   //RazorViewEngine.ViewExtension ~ cshtml
-   options.ViewLocationFormats.Add("/MyView/{1}/{0}" + RazorViewEngine.ViewExtension);
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    // Mac dinh se tim view o /Views/Controller/Action.cshtml
+    //Thiet lap them  /MyView/Controller/Action.cshtml
+    //{0} -> ten Action 
+    //{1} -> ten Controller
+    //{2} -> ten Area
+    //RazorViewEngine.ViewExtension ~ cshtml
+    options.ViewLocationFormats.Add("/MyView/{1}/{0}" + RazorViewEngine.ViewExtension);
 
 });
 var app = builder.Build();
@@ -71,8 +133,8 @@ app.AddStatusCodePage(); //Tùy biến cho response từ lỗi 400 -599
 //     });
 // });
 app.UseRouting();
-
-app.UseAuthorization();
+app.UseAuthentication(); //xac dinh danh tinh
+app.UseAuthorization(); //xac thuc quyen truy cap
 app.MapRazorPages();
 // app.MapControllerRoute(
 //     name: "default",
@@ -90,8 +152,9 @@ app.MapRazorPages();
 // });
 
 //Tao endpoint
-app.MapGet("/sayhi", async context => {
-   await  context.Response.WriteAsync("Xin chao day la say hi");
+app.MapGet("/sayhi", async context =>
+{
+    await context.Response.WriteAsync("Xin chao day la say hi");
 });
 //Cac phương thức ánh xạ url vào controller
 // app.MapControllers
@@ -101,8 +164,9 @@ app.MapGet("/sayhi", async context => {
 app.MapControllerRoute(
     name: "first",
     //pattern:"xemsanpham/{id?}", //xemsanpham/1
-    pattern:"{url:regex(^((xemsanpham)|(viewproduct))$)}/{id:range(2,4)}", //abcanything/1
-    defaults : new {
+    pattern: "{url:regex(^((xemsanpham)|(viewproduct))$)}/{id:range(2,4)}", //abcanything/1
+    defaults: new
+    {
         controller = "First",
         action = "ViewProduct"
 
@@ -133,22 +197,22 @@ app.MapControllerRoute(
 //     // }
 // );
 app.MapAreaControllerRoute(
-    name:"product",
+    name: "product",
     pattern: "/{controller}/{action=Index}/{id?}",
-    areaName:"ProductManage"
+    areaName: "ProductManage"
 );
 app.MapControllerRoute(
     name: "default",
     pattern: "/{controller=Home}/{action=Index}/{id?}"
 
-    //pattern: "start-here/{controller}/{action}/{id?}"
+//pattern: "start-here/{controller}/{action}/{id?}"
 
-    // pattern: "start-here/{id}",
-    // defaults: new {
-    //     controller = "First",
-    //     action = "ViewProduct",
-    //     id = 3
-    // }
+// pattern: "start-here/{id}",
+// defaults: new {
+//     controller = "First",
+//     action = "ViewProduct",
+//     id = 3
+// }
 );
 
 //Thiết lập các attribute cho các controller 
