@@ -1,5 +1,7 @@
 using System.Configuration;
 using System.Net;
+using App.Data;
+using App.Services;
 using AppMvc.Net.ExtendMethods;
 using AppMvc.Net.Models;
 using AppMvc.Net.Services;
@@ -12,6 +14,10 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOptions();
+var mailsetting = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(mailsetting);
+builder.Services.AddSingleton<IEmailSender, SendMailService>();
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -86,6 +92,18 @@ builder.Services.AddAuthentication()
        // .AddTwitter()
        // .AddMicrosoftAccount()
        ;
+builder.Services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
+//Thiet lap policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ViewManageMenu", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole(RoleName.Administrator);
+    });
+
+});
+
 //Thiet lap cau hinh cho razor engine 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {

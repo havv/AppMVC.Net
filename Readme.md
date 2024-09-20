@@ -126,3 +126,17 @@ dotnet add package MimeKit
             services.AddIdentity<AppUser, IdentityRole>()
                     .AddEntityFrameworkStores<AppDbContext>()
                     .AddDefaultTokenProviders();
+- copy source tu xuanthulab ve 
+- Có file libman.json -> thực hiện lệnh libman restore để tải thư viện multiple-select về lưu ở thư mục wwwroot ( Để sử dụng đc lệnh libman cần cài đặt dotnet tool install -g Microsoft.Web.LibraryManager.Cli )
+- copy mailsetting trong file appsetting.identity.json vào file appsetting.json sau đó xóa file appsetting.identity.json đi
+- Thiet lap policy (xem trong file program)
+ //Thiet lap policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ViewManageMenu", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole(RoleName.Administrator);
+    });
+
+});
