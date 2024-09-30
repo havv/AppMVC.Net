@@ -140,3 +140,4 @@ builder.Services.AddAuthorization(options =>
     });
 
 });
+- ktra user có phải role admin thì hiển thị menu manage (xem file _MenuManagePartial.cshtml)
