@@ -140,3 +140,45 @@ builder.Services.AddAuthorization(options =>
     });
 
 });
+- Sử dụng policy xem trong file _MenuManagePartial.cshtml
+# Thiết lập giá trị các phần từ cho tag select 
+- Các phần tử của tag select là 1 collection SelectListItem (xem file create.cshtml của blog)
+@{
+  var items = new List<SelectListItem>();
+        items.Add(new SelectListItem(){
+            Text = "Mục 1",
+            Value = "gt1"
+
+        });
+         items.Add(new SelectListItem(){
+            Text = "Mục 2",
+            Value = "2",
+            Selected = true
+
+        });
+         items.Add(new SelectListItem(){
+            Text = "Mục 3",
+            Value = "3",
+            Disabled = true
+
+        });
+        hoặc 
+          var data = new object[]
+        {
+            new {
+                ten = "ten1",
+                giatri =1 
+            },
+             new {
+                ten = "ten2",
+                giatri = 2 
+            },
+             new {
+                ten = "ten3",
+                giatri = 3
+            }
+
+        };
+        var items = new SelectList(data, "giatri","ten", 2);
+}
+<select asp-items = "items"></select>

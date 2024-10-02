@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using AppMvc.Net.Models;
 
 namespace AppMvc.Net.Models
 {
@@ -28,10 +29,15 @@ namespace AppMvc.Net.Models
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
+            modelBuilder.Entity<Category>(entity => {
+                entity.HasIndex(c => c.Slug);
+            });
 
         }
 
         public DbSet<ContactModel> Contacts { get; set; }
+        // razorweb.models.MyBlogContext
+        public DbSet<Category> Category { get; set; }
 
     }
 }
