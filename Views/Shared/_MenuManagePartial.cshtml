@@ -6,7 +6,7 @@
 }
 @if (result.Succeeded)
 {
-  <div class="dropdown">
+  <div class="dropdown ">
     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
       aria-expanded="false">
       Manage
@@ -18,6 +18,8 @@
       <li> <a class="dropdown-item" asp-action="Index" asp-controller="Role" asp-area="Identity">Quản lý Role</a></li>
       <li> <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Identity">Quản lý User</a></li>
       <li> <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Blog">Quản lý chuyên mục Blog
+        </a></li>
+        <li> <a class="dropdown-item" asp-action="Index" asp-controller="Post" asp-area="Blog">Quản lý bai viet blog
         </a></li>
 
 

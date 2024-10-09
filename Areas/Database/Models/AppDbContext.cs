@@ -30,7 +30,14 @@ namespace AppMvc.Net.Models
                 }
             }
             modelBuilder.Entity<Category>(entity => {
-                entity.HasIndex(c => c.Slug);
+                entity.HasIndex(c => c.Slug).IsUnique();
+            });
+            modelBuilder.Entity<PostCategory>(entity => {
+                entity.HasKey(c => new {c.PostId, c.CategoryId});
+
+            });
+            modelBuilder.Entity<Post>(entity => {
+                entity.HasIndex(p => p.Slug).IsUnique();
             });
 
         }
@@ -38,6 +45,10 @@ namespace AppMvc.Net.Models
         public DbSet<ContactModel> Contacts { get; set; }
         // razorweb.models.MyBlogContext
         public DbSet<Category> Category { get; set; }
+
+         public DbSet<Post> Posts { get; set; }
+
+         public DbSet<PostCategory> PostCategories { get; set; }
 
     }
 }

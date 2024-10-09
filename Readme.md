@@ -182,3 +182,10 @@ builder.Services.AddAuthorization(options =>
         var items = new SelectList(data, "giatri","ten", 2);
 }
 <select asp-items = "items"></select>
+
+# Seed data
+- dotnet add package bogus
+- Xem file DbManageController
+
+# phan slug cua them bai post 
+- chua lam dc phan phat sinh slug tu dong. Do slug la require (xem lai sau xem file AppUtilities.cs...)
