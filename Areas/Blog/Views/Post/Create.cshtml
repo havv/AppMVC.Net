@@ -83,3 +83,8 @@
 
     <partial name="_ValidationScriptsPartial" />
     }
+
+@{
+    var summernote = new AppMvc.Net.Models.Summernote("#Content");
+}
+<partial name="_Summernote"model="summernote"/>

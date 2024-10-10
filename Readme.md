@@ -189,3 +189,23 @@ builder.Services.AddAuthorization(options =>
 
 # phan slug cua them bai post 
 - chua lam dc phan phat sinh slug tu dong. Do slug la require (xem lai sau xem file AppUtilities.cs...)
+
+# Tích hợp html editor
+- Có nhiều trình soạn thảo html editor : fckeditor, summbernote,.. (thư viện javascript)
+- Sử dụng libman để lấy về thư viện summernote 
+- Trong file libman hiện đang thiết lập lất về từ cdnjs (có thể vào trang cdnjs tìm summernote lấy tên và phiên bản về copy vào file libman)
+    {
+      "library": "summernote@0.9.0",
+      "destination": "wwwroot/lib/summernote"
+    }
+- Thực hiện lệnh libman restore để tự động lấy thư viện summernote về và lưu trong thư mục wwwroot như cấu hình trong file libman
+- Xem tài liệu trên trang summernote.org
+- Phần thư viện  <script src="~/lib/summernote/summernote-bs5.min.js"></script>
+<link rel="stylesheet" href="~/lib/summernote/summernote-bs5.min.css">
+    } phải đặt sau thư viện jquery
+   css, js của summnernote có thể cho vào 1 section Script 
+   hoặc phải để jquery vào trong thẻ head để xuất hiện trc summernote
+   (chi tiết xem file index và _layout)
+
+- Để sử dụng đc nhiều lần tạo ra 1 partial summernote.cshtml 
+(xem file summernote.cshtml  và summernote.cs)
