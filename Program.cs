@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -127,7 +128,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//Thiết lập truy cập file tĩnh lưu trong thư mục wwwroot
 app.UseStaticFiles();
+
+//Thiết lập truy cập file tĩnh lưu trong thư mục Uploads 
+app.UseStaticFiles(new StaticFileOptions(){
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/contents" //  /contents/1.jpg => Uploads/1.jpg
+
+});
 //app.UseStatusCodePages(); // la 1 middleware tao response tu loi 400  - 599
 app.AddStatusCodePage(); //Tùy biến cho response từ lỗi 400 -599 
 //Tùy biến thêm nội dung trả về của UseStatusCodePages

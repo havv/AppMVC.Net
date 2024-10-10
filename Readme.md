@@ -209,3 +209,54 @@ builder.Services.AddAuthorization(options =>
 
 - Để sử dụng đc nhiều lần tạo ra 1 partial summernote.cshtml 
 (xem file summernote.cshtml  và summernote.cs)
+
+# Tích hợp trình quản lý file eFinder 
+- Đây là 1 thư viện phía client, nó sử dụng javascript jquery để tạo ra giao diện tương tác với hệ thống file trên ứng dụng
+- Tìm github của efinder đọc phần wiki https://github.com/Studio-42/elFinder/wiki
+- Ứng dụng của chúng ta phải cung cấp các api Client server api có các command list như open, file ... gọi chung là connector (chi tiết xem phần Client server apitrong tài liệu)
+- Để xây dựng đc các api này thì sẽ rất lâu nên sẽ dùng 1 thư viện của bên thứ 3 là elFinder.NetCore https://github.com/gordon-matt/elFinder.NetCore(chúng ta chỉ cần tích hợp thư viện này vào dự án)
+ có thể sử dụng lệnh dotnet add package elFinder.NetCore --version 1.4.0 để lấy thư viện về
+ hoặc như trong project này thì dùng libman
+thêm  {
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jqueryui"
+    },
+    {
+      "library": "elfinder@2.1.57",
+      "destination": "wwwroot/lib/elfinder"
+    }
+    vào file libman rồi gọi lệnh libman restore
+    thực hiện update jqueryui và elfinder gọi lệnh libman update jqueryui
+                                                    libman update elfinder
+- Tạo area file dotnet aspnet-codegenerator area Files
+- Tạo FileController dotnet aspnet-codegenerator controller -name FileManagerController -outDir Areas/Files/Controllers/
+- Nạp các thư viện cần thiết vào thẻ head của layout
+ <link rel="stylesheet" href="~/lib/jqueryui/themes/base/theme.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/elfinder.full.css" />
+        <link rel="stylesheet" href="~/lib/elfinder/css/theme.min.css" />
+     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/elfinder/js/elfinder.full.js"></script>
+
+- Tích hợp elFinder.NetCore vào dự án  dotnet add package elFinder.NetCore
+- Copy code mẫu trên xuanthulab vào file FileManagerController
+- tạo thư mục files trong wwwroot
+- Nếu muốn file upload đc lưu trong 1 thư mục riêng là Uploads chứ k phải thư mục files trong wwwroot thì để truy cập đc file tĩnh bên trong thư mục Uploads thì phải cho vào pipeline 1 staticfile
+ + Trong file Program.cs thêm
+  //Thiết lập truy cập file tĩnh lưu trong thư mục Uploads
+app.UseStaticFiles(new StaticFileOptions(){
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/contents"
+
+});
+ + xóa thư mục files trong wwwroot. Truy cập file trong thư mục Uploads qua đường dẫn /contents/file
+ - Cấu hình để elfinder làm việc với Uploads (xem hàm GetConnector trong file FileManagerController )
+ - Thêm elfinder vào summernote
+ + nạp thư viện elfinder vào _Summernote.cshtml
+  <link rel="stylesheet" href="~/lib/jqueryui/themes/base/theme.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/elfinder.full.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/theme.min.css" />
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/elfinder/js/elfinder.full.js"></script>
+    + viết plugin cho summernote để có nút bấm elfinder xem trong scripts của file _Summernote.cshtml
