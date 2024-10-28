@@ -36,4 +36,27 @@ public class Category
     [Display(Name = "Danh mục cha")]
     public Category? ParentCategory { get; set; }
 
+    public void ChildCategoryIds(List<int> lists, ICollection<Category> childcates = null)
+    {
+        if(childcates == null)
+            childcates = this.CategoryChildren;
+        foreach(Category category in childcates)
+        {
+            lists.Add(category.Id);
+            ChildCategoryIds(lists,category.CategoryChildren);
+        }
+    }
+    public List<Category> ListParents()
+    {
+        List<Category> li = new List<Category>();
+        var parent = this.ParentCategory;
+        while(parent != null)
+        {
+            li.Add(parent);
+            parent = parent.ParentCategory;
+        }
+        li.Reverse();
+        return li;
+    }
+
 } 

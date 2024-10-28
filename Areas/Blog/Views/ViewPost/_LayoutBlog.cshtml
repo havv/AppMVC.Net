@@ -1,0 +1,12 @@
+@{
+    Layout = "_Layout";
+}
+<div class="row">
+    <div class="col-md-8">
+        @RenderBody()
+    </div>
+    <div class="col-md-4">
+        @* THiết lập section Sidebar tham số false là ko thiết lập sidebar này cũng đc *@
+        @RenderSection("Sidebar",false) 
+    </div>
+</div>

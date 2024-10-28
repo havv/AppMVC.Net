@@ -28,9 +28,10 @@ namespace AppMvc.Net.Areas.Blog.Controllers
 
             var query = (from c in _context.Category select c)
                         .Include(c => c.ParentCategory)
-                        .Include(c => c.CategoryChildren);
-            var categories = (await query.ToListAsync())
-                            .Where(c => c.ParentCategory == null).ToList();
+                        .Include(c => c.CategoryChildren)
+                        .Where(c => c.ParentCategory == null);
+            var categories = (await query.ToListAsync()).ToList();
+                            //.Where(c => c.ParentCategory == null).ToList();
             return View(categories);
         }
 

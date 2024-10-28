@@ -260,3 +260,49 @@ app.UseStaticFiles(new StaticFileOptions(){
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="~/lib/elfinder/js/elfinder.full.js"></script>
     + viết plugin cho summernote để có nút bấm elfinder xem trong scripts của file _Summernote.cshtml
+# Nâng cấp phiên bản net 
+- kiểm tra sdk đang cài trên máy bằng lệnh 
++ dotnet --list-sdks
++ dotnet --list-runtime
++ dotnet --version
+- nếu chưa có phiên bản sdk cần nâng cấp thì tải về cài đặt 
+- Sửa TargetFramework trong file csproj
+- nâng cấp các package trong file csproj lên phiên bản mới nhất (vd dotnet add package Bogus làm tương tự với các package khác)
+- Để làm nhanh thì làm như sau 
+  + liệt kê tất các các package dùng trong dự án dotnet list package copy rồi chỉnh sửa paste lại vào terminal cho chạy 
+  + Chạy xong chạy dotnet restore xem còn package nào chưa đc update 
+# Một số vấn đề cần lưu ý khi viết query 
+ nên viết như này nhé
+            var query = (from c in _context.Category select c)
+                        .Include(c => c.ParentCategory)
+                        .Include(c => c.CategoryChildren)
+                        .Where(c => c.ParentCategory == null);
+            var categories = (await query.ToListAsync()).ToList();
+Không nên viết như này vì như này thì sẽ select hết data sau đó mới thực hiện where => ảnh hưởng performance (ko nên làm theo xuanthu như này nhé)
+             var query = (from c in _context.Category select c)
+                        .Include(c => c.ParentCategory)
+                        .Include(c => c.CategoryChildren);
+                       
+            var categories = (await query.ToListAsync())
+             .Where(c => c.ParentCategory == null).ToList();
+# Xây dựng trang hiển thị tin tức blog
+ - Tạo controller dotnet aspnet-codegenerator controller -name ViewPostController -namespace AppMvc.Net.Areas.Blog.Controllers -outDir Areas/Blog/Controllers/
+ - Tạo view Index, _LayoutBlog ...
+ - Tạo ra 1 component để render ra menu 
+  + Trong thư mục shared tạo ra 1 thư mục Components/CategorySidebar
+  + Tạo class CategorySidebar kế thừa ViewComponent, tạo file view defautl.cshtml gọi từ Invoke trong CategorySidebar
+  + Để sử dụng component CategorySidebar trong cshtml khác thì gọi như sau 
+    @await Component.InvokeAsync("AppMvc.Net.Components.CategorySidebar") (xem file index cua Post )
+  + Tạo 1 lớp con CategorySidebarData  bên trong CategorySidebar (xem file CategorySidebar)
+  # Một số lưu ý 
+  - Muốn sử dụng ThenInclude thì dùng thư viện using Microsoft.EntityFrameworkCore chứ k phải dùng using System.Data.Entity; (xem file ViewPostController)
+  - Trong file csproj có cả package <PackageReference Include="MySql.Data.EntityFramework" Version="9.0.0" /> nên khi buid có waring warning NU1701: Package 'MySql.Data.EntityFramework 9.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework
+,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.
+ => ko dùng thì bỏ đi nhé
+- git status : ktra xem dang o nhanh nao, cac file thay doi cac file moi
+- git add . : add tat ca cac file thay doi , them ..
+- git commit -m "ViewPost"
+- git checkout master : chuyen sang nhanh master
+- git merge B10 : gop nhanh B10 vao master
+- git push --all : day toan bo ket qua len github
+

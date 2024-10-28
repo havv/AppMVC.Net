@@ -1,0 +1,73 @@
+@model List<Post>;
+@using AppMvc.Net.Components;
+@{
+    List<Category> categories = ViewBag.categories as List<Category>;
+    Category category = ViewBag.category as Category;
+    ViewData["Title"] = (category != null) ? category.Title : "Bai viet trong tat ca cac danh muc";
+}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="~">Home</a></li>
+    @if(category != null)
+    {
+      var li = category.ListParents();
+      foreach(var l in li)
+      {
+        <li class="breadcrumb-item">
+          <a asp-action="Index" asp-route-categoryslug ="@l.Slug">@l.Title</a>
+        </li>
+      }
+
+    }
+  </ol>
+</nav>
+<h1>@ViewData["Title"]</h1>
+@if(category != null)
+{
+    @* <p>@Html.Raw(category.Description)</p> *@
+    <p>@category.Description</p>
+
+}
+else
+{
+    <p>Bai viet trong tat ca cac danh muc...</p>
+}
+<hr>
+@foreach(var post in Model)
+{
+  
+<div class="d-flex align-items-cente border-bottom mb-3 pb-3">
+  <div class="flex-shrink-0">
+    <img src="/contents/noimage.jpg" alt="..." class="w-25">
+  </div>
+  <div class="flex-grow-1 ms-3">
+    <h5 class="mt-0">
+        <a  asp-action="Detail" asp-controller="ViewPost" asp-route-postslug="@post.Slug">@post.Title</a>
+    </h5>
+   @post.Description
+   <div>
+    Chủ đề:
+     <strong class="text-danger">@post.PostCategories.FirstOrDefault()?.Category.Title</strong> 
+   </div>
+   <div class="author-row">
+    Tác giả: <strong>@post.Author</strong>|
+    Ngày cập nhật: <i>@post.DateUpdated.ToShortDateString()</i>
+
+   </div>
+  </div>
+</div>
+
+}
+ 
+Đây là nội dung chuyên mục
+@section Sidebar {
+   @await Component.InvokeAsync("AppMvc.Net.Components.CategorySidebar", 
+    new CategorySidebar.CategorySidebarData()
+    {
+        Categories = categories,
+        Level = 0,
+        CategorySlug = ViewBag.categoryslug
+
+    })
+}
+<partial name = "_PagingXTL" model = "@ViewBag.PagingModel" ></partial>
