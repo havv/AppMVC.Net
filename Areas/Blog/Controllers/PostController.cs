@@ -7,8 +7,6 @@ using App.Data;
 using App.Models;
 using Microsoft.AspNetCore.Identity;
 using AppMvc.Net.Areas.Blog.Models;
-using App.Utilities;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AppMvc.Net.Areas.Blog.Controllers
 {

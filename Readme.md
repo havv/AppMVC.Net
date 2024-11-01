@@ -305,4 +305,18 @@ Không nên viết như này vì như này thì sẽ select hết data sau đó 
 - git checkout master : chuyen sang nhanh master
 - git merge B10 : gop nhanh B10 vao master
 - git push --all : day toan bo ket qua len github
+- git branch -r : liet ke cac nhanh o tren git git branch : liet ke cac nhanh tren local
+- git checkout B10: chuyen sang nhanh B10
+- git branch B11: tao nhanh B11
+- git checkout B11: chuyen sang nhanh B11
+# Xây dựng trang quản lý sản phẩm
+- Tạo các table liên quan đến product
+- Thêm các table vào AppDbContext 
+- Dùng entity framework migration để update database : dotnet ef migrations add Product ,  dotnet ef database update
+- Thêm data fake cho Product (xem file DbManageController)
+# Xây dựng upload photo cho sản phẩm
+- Tạo model ProductPhoto, cập nhật dbcontext => cập nhật database dùng migrations
+- Tao file UploadPhoto.cshtml
+- Tạo 1 class UploadOneFile có chứa IFormFile để upload (xem file ProductController)
+- Sử dụng ajax gọi api ListPhotos để hiển thị dữ liệu photo thay vì sử dụng view của asp.net (xem file UploadPhoto.cshtml)
 

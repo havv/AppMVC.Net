@@ -1,0 +1,133 @@
+@model AppMvc.Net.Areas.Product.Controllers.ProductController.UploadOneFile
+@{
+    Product product = ViewData["product"] as Product;
+}
+<h1>Upload Photo: @product.Title</h1>
+<form method="post" enctype="multipart/form-data">
+    <label asp-for="@Model.FileUpload"></label>
+    <input asp-for="@Model.FileUpload">
+    <span asp-validation-for="@Model.FileUpload"></span>
+    <button class="btn btn-primary" asp-action="UploadPhoto" asp-route-id="@product.ProductId">Upload</button>
+
+</form>
+<hr>
+<input class="collapse" type="file" id="selectfileupload" onchange="AutoUploadPhoto()">
+<span class="btn btn-primary" onclick="ClickButtonUpload()">Uploads</span>
+
+<div id="box-photo-upload" class="d-flex flex-wrap photo-upload" data-id="@product.ProductId">
+    @* @foreach (var photo in product.Photos)
+    {
+    <div class="photodetail w-25 p-1">
+    <img class="w-100" src="/contents/Products/@photo.FileName">
+    <span class="btn btn-danger" data-id = "@photo.Id">Delete</span>
+
+    </div>
+
+    } *@
+</div>
+@*Thay vì load data như trong foreach bên trên có thể sử dụng ajax như dưới đây*@
+@section Scripts {
+    <script>
+        function AutoUploadPhoto(){
+               var formData = new FormData();
+               var id = $("#box-photo-upload").data("id");
+                formData.append("id", id);
+                var length = document.getElementById("selectfileupload").files.length;
+                if(length == 0) return ;
+                var fileData = document.getElementById("selectfileupload").files[0];
+                formData.append("fileUpload", fileData)
+
+                var urlUpload= "@Url.Action("UploadPhotoApi")";
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlUpload,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        LoadPhotos();
+
+
+
+                    }
+
+                });          
+
+        }
+        function ClickButtonUpload(){
+            $("#selectfileupload").click();
+
+        }
+        function setClickDeletePhoto() {
+            $("#box-photo-upload .photodetail span").click(function () {
+                if(confirm("Co chac chan xoa anh?") != true ) return ;
+                var spanButton = $(this);
+                var id = spanButton.data("id");
+                //alert(id);           
+                var formData = new FormData();
+                formData.append("id", id);
+                var urlDeletePhoto = "@Url.Action("DeletePhoto")";
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlDeletePhoto,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+
+                        LoadPhotos();
+
+                    }
+
+                });          
+            })
+        };
+
+        function LoadPhotos() {
+        @*Lấy ra phần từ có id là box-photo-upload*@
+                var box = $("#box-photo-upload");
+
+        @*Đọc giá trị thuộc tính data-id của phần tử có id là box-photo-upload *@
+                var productId = box.data("id");
+        @*console.log(productId);*@
+            box.empty();
+            var formData = new FormData();
+            formData.append("id", productId);
+            var urlListPhoto = "@Url.Action("ListPhotos")";
+            $.ajax({
+                data: formData,
+                cache: false,
+                url: urlListPhoto,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    //xu ly du lieu lay dươc
+                    //console.log(data);
+                    data.photos.forEach(function (item) {
+                        //console.log(item.id);
+                        //console.log(item.path);
+                        var e = $(' <div class="photodetail w-25 p-1">'
+                            + '<img class="w-100" src="' + item.path + '">'
+                            + '<span class="btn btn-danger" data-id = "' + item.id + '">Delete</span> </div>');
+                        box.append(e);
+
+                    });
+                    setClickDeletePhoto();
+
+                }
+
+            });
+
+
+        }
+        @*Khi toàn bộ documnent đc load thì function đc thực thi ta sẽ gọi LoadPhotos*@
+            $(document).ready(function () {
+                LoadPhotos();
+            });
+
+    </script>
+}

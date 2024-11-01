@@ -1,0 +1,215 @@
+@model AppMvc.Net.Areas.Product.Models.CreateProductModel;
+@using AppMvc.Net.Areas.Product.Models;
+
+@{
+    ViewData["Title"] = "Sửa sản phẩm";
+    var list = ViewData["categories"] as MultiSelectList;
+}
+
+<h1>@ViewData["Title"] </h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId"/>
+              <div class="form-group">
+                <label asp-for="CategoryIds" class="control-label"></label>
+                <select asp-for="CategoryIds" asp-items="list" multiple = "multiple" class="w-100" ></select>
+                <span asp-validation-for="CategoryIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <input class="collapse" type="file" id="selectfileupload" onchange="AutoUploadPhoto()">
+<span class="btn btn-primary" onclick="ClickButtonUpload()">Uploads</span>
+
+<div id="box-photo-upload" class="d-flex flex-wrap photo-upload" data-id="@Model.ProductId">
+    @* @foreach (var photo in product.Photos)
+    {
+    <div class="photodetail w-25 p-1">
+    <img class="w-100" src="/contents/Products/@photo.FileName">
+    <span class="btn btn-danger" data-id = "@photo.Id">Delete</span>
+
+    </div>
+
+    } *@
+</div>
+             <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" ></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Slug" class="control-label"></label>
+                <input asp-for="Slug" class="form-control" />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                 <textarea asp-for="Content" class="form-control" ></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                </label>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="AuthorId" class="control-label"></label>
+                <select asp-for="AuthorId" class ="form-control" asp-items="ViewBag.AuthorId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateUpdated" class="control-label"></label>
+                <input asp-for="DateUpdated" class="form-control" />
+                <span asp-validation-for="DateUpdated" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Cập nhật sản phẩm" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Danh sách sản phẩm</a>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css" />
+
+    <script>
+        $("#CategoryIds").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+      <script>
+        function AutoUploadPhoto(){
+               var formData = new FormData();
+               var id = $("#box-photo-upload").data("id");
+                formData.append("id", id);
+                var length = document.getElementById("selectfileupload").files.length;
+                if(length == 0) return ;
+                var fileData = document.getElementById("selectfileupload").files[0];
+                formData.append("fileUpload", fileData)
+
+                var urlUpload= "@Url.Action("UploadPhotoApi")";
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlUpload,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        LoadPhotos();
+
+
+
+                    }
+
+                });          
+
+        }
+        function ClickButtonUpload(){
+            $("#selectfileupload").click();
+
+        }
+        function setClickDeletePhoto() {
+            $("#box-photo-upload .photodetail span").click(function () {
+                if(confirm("Co chac chan xoa anh?") != true ) return ;
+                var spanButton = $(this);
+                var id = spanButton.data("id");
+                //alert(id);           
+                var formData = new FormData();
+                formData.append("id", id);
+                var urlDeletePhoto = "@Url.Action("DeletePhoto")";
+                $.ajax({
+                    data: formData,
+                    cache: false,
+                    url: urlDeletePhoto,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+
+
+                        LoadPhotos();
+
+                    }
+
+                });          
+            })
+        };
+
+        function LoadPhotos() {
+        @*Lấy ra phần từ có id là box-photo-upload*@
+                var box = $("#box-photo-upload");
+
+        @*Đọc giá trị thuộc tính data-id của phần tử có id là box-photo-upload *@
+                var productId = box.data("id");
+        @*console.log(productId);*@
+            box.empty();
+            var formData = new FormData();
+            formData.append("id", productId);
+            var urlListPhoto = "@Url.Action("ListPhotos")";
+            $.ajax({
+                data: formData,
+                cache: false,
+                url: urlListPhoto,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    //xu ly du lieu lay dươc
+                    //console.log(data);
+                    data.photos.forEach(function (item) {
+                        //console.log(item.id);
+                        //console.log(item.path);
+                        var e = $(' <div class="photodetail w-25 p-1">'
+                            + '<img class="w-100" src="' + item.path + '">'
+                            + '<span class="btn btn-danger" data-id = "' + item.id + '">Delete</span> </div>');
+                        box.append(e);
+
+                    });
+                    setClickDeletePhoto();
+
+                }
+
+            });
+
+
+        }
+        @*Khi toàn bộ documnent đc load thì function đc thực thi ta sẽ gọi LoadPhotos*@
+            $(document).ready(function () {
+                LoadPhotos();
+            });
+
+    </script>
+    }
+
+@{
+    var summernote = new AppMvc.Net.Models.Summernote("#Content"){
+        Heigt = 500
+    };
+}
+<partial name="_Summernote"model="summernote"/>
