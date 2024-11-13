@@ -319,4 +319,38 @@ Không nên viết như này vì như này thì sẽ select hết data sau đó 
 - Tao file UploadPhoto.cshtml
 - Tạo 1 class UploadOneFile có chứa IFormFile để upload (xem file ProductController)
 - Sử dụng ajax gọi api ListPhotos để hiển thị dữ liệu photo thay vì sử dụng view của asp.net (xem file UploadPhoto.cshtml)
+- Them upload vao edit san pham
+- can xem lai sao moi lan reaload trang la lai upload lai anh cu ???
+# Xay dung trang hien thi san pham va dat hang
+- Lam tuong tu phan Blog cua post (copy sang)
+- Chuc nang dat hang
+- Để xây dựng chức năng giỏ hàng, danh sách các mặt hàng sẽ lưu trong Session của hệ thống. Do vậy, ứng dụng cần đảm bảo kích hoạt Session - làm theo hướng dẫn tại Sử dụng Session trong ASP.NET , đồng thời cũng dùng kỹ thuật JSON để lưu dữ liệu nên cần đảm bảo tích hợp hai gói là:
+dotnet add package Newtonsoft.Json (convert 1 đối tượng thành json sau đó lưu vào session , chuyển chuỗi json thành 1 đối tượng)
+dotnet add package Microsoft.AspNetCore.Session (Kích hoạt session)
+dotnet add package Microsoft.Extensions.Caching.Memory (Lưu trữ thông tin session ở trong bộ nhớ)
+- Thêm vảo Startup.ConfigureServices (Đối với .net cũ)
 
+services.AddDistributedMemoryCache();           // Đăng ký dịch vụ lưu cache trong bộ nhớ (Session sẽ sử dụng nó)
+services.AddSession(cfg => {                    // Đăng ký dịch vụ Session
+    cfg.Cookie.Name = "xuanthulab";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
+    cfg.IdleTimeout = new TimeSpan(0,30, 0);    // Thời gian tồn tại của Session
+});
+Trong Startup.Configure cho thêm vào middleware UseSession (sau UseStaticFiles()):
+
+app.UseSession();
+- Với .net core thêm vào file Program.cs
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDistributedMemoryCache();           // Đăng ký dịch vụ lưu cache trong bộ nhớ (Session sẽ sử dụng nó)
+builder.Services.AddSession(cfg => {                    // Đăng ký dịch vụ Session
+    cfg.Cookie.Name = "appmvc";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
+    cfg.IdleTimeout = new TimeSpan(0,30, 0);    // Thời gian tồn tại của Session
+});
+app.UseSession();  // (sau UseStaticFiles()):
+//Session có thể truy cập thông qua đối tượng HttpContext trong controller hoặc trong view
+
+- Tạo các file CartItem, CartService (Đăng ký dịch vụ CartService services.AddTransient<CartService>() trong file Program.cs) 
+- Trong ViewProductController inject dịch vụ CartService để sử dụng
+- Xây dựng chức năng thêm mặt hàng vào cart (xem file ViewProductController)
+- Tạo partial _CartPartial.cshtml để hiển thị giỏ hàng
+- Mở layout ra, chèn đoạn mã để render partial này tại menu @await Html.PartialAsync("_CartPartial") (Lúc nào thì dùng Html.PartialAsync , luc nao thi dung thẳng thẻ <partial name ="">?? )
+- Xây dựng chức năng xóa giỏ hàng, update giỏ hàng, gửi đơn hàng (xem file ViewProductController)

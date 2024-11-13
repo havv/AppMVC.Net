@@ -15,6 +15,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDistributedMemoryCache();           // Đăng ký dịch vụ lưu cache trong bộ nhớ (Session sẽ sử dụng nó)
+builder.Services.AddSession(cfg => {                    // Đăng ký dịch vụ Session
+    cfg.Cookie.Name = "appmvc";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
+    cfg.IdleTimeout = new TimeSpan(0,30, 0);    // Thời gian tồn tại của Session
+});
 builder.Services.AddOptions();
 var mailsetting = builder.Configuration.GetSection("MailSettings");
 builder.Services.Configure<MailSettings>(mailsetting);
@@ -104,7 +109,7 @@ builder.Services.AddAuthorization(options =>
     });
 
 });
-
+builder.Services.AddTransient<CartService>() ;
 //Thiet lap cau hinh cho razor engine 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
@@ -130,6 +135,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 //Thiết lập truy cập file tĩnh lưu trong thư mục wwwroot
 app.UseStaticFiles();
+app.UseSession();
 
 //Thiết lập truy cập file tĩnh lưu trong thư mục Uploads 
 app.UseStaticFiles(new StaticFileOptions(){
