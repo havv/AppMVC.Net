@@ -1,10 +1,13 @@
 @model IEnumerable<AppMvc.Net.Models.ContactModel>
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
 
 @{
     ViewData["Title"] = "Danh sách liên hệ";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>@ViewData["Title"] </h1>
+@* <h1>@ViewData["Title"] </h1> *@
 @* 
 <p>
     <a asp-action="Create">Create New</a>
@@ -57,3 +60,11 @@
 }
     </tbody>
 </table>
+@{
+    adminSidebarService.SetActive("Contact", "Index", "Contact");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}

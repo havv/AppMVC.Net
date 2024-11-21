@@ -1,14 +1,15 @@
 @model AppMvc.Net.Models.Category
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Category</h4>
-    <hr />
+<div>  
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -37,6 +38,15 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa chuyên mục</a> |
+    <a asp-action="Index">Danh sách chuyên mục </a>
 </div>
+
+@{
+    adminSidebarService.SetActive("Category", "Index", "Blog");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}

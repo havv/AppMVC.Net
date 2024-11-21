@@ -1,15 +1,16 @@
 @model AppMvc.Net.Models.Post
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa bài viết";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Bạn có chắc chắn xóa bài viết?</h3>
 <div>
-    <h4>Post</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -63,7 +64,15 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="PostId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Danh sách bài viết</a>
     </form>
 </div>
+@{
+    adminSidebarService.SetActive("Post", "Index", "Blog");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}

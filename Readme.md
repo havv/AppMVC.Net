@@ -216,7 +216,7 @@ builder.Services.AddAuthorization(options =>
 - Ứng dụng của chúng ta phải cung cấp các api Client server api có các command list như open, file ... gọi chung là connector (chi tiết xem phần Client server apitrong tài liệu)
 - Để xây dựng đc các api này thì sẽ rất lâu nên sẽ dùng 1 thư viện của bên thứ 3 là elFinder.NetCore https://github.com/gordon-matt/elFinder.NetCore(chúng ta chỉ cần tích hợp thư viện này vào dự án)
  có thể sử dụng lệnh dotnet add package elFinder.NetCore --version 1.4.0 để lấy thư viện về
- hoặc như trong project này thì dùng libman
+ hoặc như trong project này thì dùng libman ( Neu chua co libman thi dung lenh sau de cai dat dotnet tool install -g Microsoft.Web.LibraryManager.Cli de su dung libman xem tren trang microsoft nhe)
 thêm  {
       "library": "jqueryui@1.12.1",
       "destination": "wwwroot/lib/jqueryui"
@@ -354,3 +354,36 @@ app.UseSession();  // (sau UseStaticFiles()):
 - Tạo partial _CartPartial.cshtml để hiển thị giỏ hàng
 - Mở layout ra, chèn đoạn mã để render partial này tại menu @await Html.PartialAsync("_CartPartial") (Lúc nào thì dùng Html.PartialAsync , luc nao thi dung thẳng thẻ <partial name ="">?? )
 - Xây dựng chức năng xóa giỏ hàng, update giỏ hàng, gửi đơn hàng (xem file ViewProductController)
+
+# Tùy biến giao diện của trang quản trị sử dụng template mẫu SB Admin (giao diện mẫu dành cho các trang quản trị)
+- SB Admin 2 có sử dụng các thành phần là Bootstrap 4, jQuery, chart.js, fontawesome, jquery-easing. Nên cần đảm bảo có các thành phần này trong dự án.
+- Tải mã nguồn SBAdmin về 
+- Với Bootstrap và jQuery mặc định tích hợp trong ASP.NET mẫu đã xây dựng, chart.js ở đây không dùng đến nên chưa cần tích hợp. Còn lại Font Awesome và jQuery-easinng ta tích hợp vào dự án bằng LibMan
+Ktra version jquery-easing bằng cách tìm kiếm trên cdnjs.com
+ktra version font-awesome sử dụng trong source sb admin vendor\fontawesome-free\attribution.js
+Thêm code vào file libman.json
+ {
+      "library": "jquery-easing@1.4.1",
+      "destination": "wwwroot/lib/jquery-easing"
+    },
+    {
+      "library": "font-awesomeg@5.15.3",
+      "destination": "wwwroot/lib/font-awesome"
+    }
+Thực hiện lệnh sau:
+libman restore
+
+Hoặc có thể dùng lệnh  nếu ko sửa file libman.json
+libman install jquery-easing
+libman install font-awesome
+- libman bị lỗi ko install đc font-awesome (đã thử libman cache clean libman restore mà vẫn k đc)
+ => dùng npm để download và dùng thêm gulp để copy sang thư mục wwwroot ( đọc thêm ở link này https://stackoverflow.com/questions/49552235/how-to-install-font-awesome-in-visual-studio-2017-using-asp-net-core-v2)
+ - dùng npm vẫn ko cài đc font-awesome 5 trở lên. Ktra version bằng lệnh  npm show font-awesome versions thì 4.7.0 là max => cài 4.7.0
+ - copy font-awesome trong node_modules(sau khi cài bằng npm thì font-awesome ở trong thư mục node_modules) bằng gulp (xem file gulp) chạy lệnh gulp lib để copy nhé 
+ - gulp 5 ko dùng đc ** trong gulp.js nên đổi thành gulp 4 (npm install gulp@4) (chưa hiểu sao ??) chạy lại gulp lib sau khi cài lại để copy font-awesome
+ - font-awesome version 4 thiếu nhiều icon nên cài version 5 (có vẻ từ version 5 sẽ phải cài theo kiểu  "@fortawesome/fontawesome-free": "^5.15.3" thêm dòng này vào package.json bỏ dòng "fontawesome": "^4.7.0" rồi chạy lệnh npm install nhé , có thể gỡ bản version 4 bằng cách npm uninstall font-awesome@4.7.0)
+ - Download mã nguồn sb admin Sửa các trang bằng cách copy source trong sb admin  và sửa cshtml 
+ - Trong trang quản trị có nút bấm ở sidebar để nó hoạt động thì đặt file js xuống dưới cùng file cshtml nhé. (xem file _LayoutAdmin.cshtml)
+ - Các mục của sidebar sẽ do view đổ sang nên từ dòng 52 trong file _LayoutAdmin.cshtml sẽ cho vào 1 chỉ thị @RenderSectionAsync("Sidebar", false) xuất ra nội dung của section Sidenar
+ - @$ trong string la string viết đc trên nhiều dòng và có kèm giá trị
+ - Chú ý từ bootstrap 5 thì data-toggle="collapse" data-target="#collapseTwo" đổi thành data-bs-toggle="collapse" data-bs-target="#collapseTwo"

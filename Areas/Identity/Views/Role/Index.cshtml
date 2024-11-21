@@ -1,8 +1,10 @@
 @model List<RoleModel>
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
 @{
     ViewData["Title"] = "Danh sách các role (vai trò)";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
 }
-<h2>@ViewData["Title"]</h2>
+@* <h2>@ViewData["Title"]</h2> *@
 
 <partial name="_StatusMessage"></partial>
 
@@ -34,3 +36,11 @@
         </tr>
     }
 </table>
+@{
+    adminSidebarService.SetActive("Role", "Index", "Identity");
+}
+
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml());
+}

@@ -1,13 +1,17 @@
 @model IEnumerable<AppMvc.Net.Models.CategoryProduct>
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
-    ViewData["Title"] = "Chuyên mục Blog";
+    ViewData["Title"] = "Danh mục sản phẩm";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>@ViewData["Title"]</h1>
+@* <h1>@ViewData["Title"]</h1> *@
 
 <p>
-    <a asp-action="Create" class="btn btn-primary btn-sm">Tạo chuyên mục</a>
+    <a asp-action="Create" class="btn btn-primary btn-sm">Tạo danh mục</a>
 </p>
 <table class="table">
     <thead>
@@ -69,3 +73,12 @@
 
     }
 }
+
+@{
+    adminSidebarService.SetActive("CategoryProduct", "Index", "Product");
+}
+@section Sidebar 
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+}
+

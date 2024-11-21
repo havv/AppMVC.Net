@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppMvc.Net.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>y 
@@ -45,7 +46,7 @@
                         </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Contact" asp-controller="Contact"
-                                asp-action="SendContact">Liên hệ</a>
+                                asp-action="SendContact"><i class="fas fa-phone-alt"></i>Liên hệ</a>
                         </li>
                     </ul>
                     @await Html.PartialAsync("_CartPartial") 

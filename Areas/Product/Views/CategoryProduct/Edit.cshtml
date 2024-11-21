@@ -1,12 +1,13 @@
 @model AppMvc.Net.Models.CategoryProduct
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa danh mục sản phẩm";
+     Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>Edit</h1>
-
-<h4>Category</h4>
 <div class="row">
     <div class="col-md-10">
         <form asp-action="Edit">
@@ -33,17 +34,25 @@
                 <span asp-validation-for="Slug" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Lưu" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Danh sách danh mục sản phẩm</a>
 </div>
 
 @{
     var summernote = new AppMvc.Net.Models.Summernote("#Description");
 }
 <partial name="_Summernote"model="summernote"/>
+
+@{
+    adminSidebarService.SetActive("CategoryProduct", "Index", "Product");
+}
+@section Sidebar 
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+}

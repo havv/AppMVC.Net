@@ -1,13 +1,17 @@
 @model IEnumerable<AppMvc.Net.Models.Post>
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách bài viết";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>Index</h1>
+@* <h1>Index</h1> *@
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Tạo bài viết mới</a>
 </p>
 <p>Tổng số bài viết : @ViewBag.totalPosts</p>
 <partial name="_AlertMessage"></partial>
@@ -83,3 +87,11 @@
     </tbody>
 </table>
 <partial name = "_PagingXTL" model = "@ViewBag.PagingModel" ></partial>
+@{
+    adminSidebarService.SetActive("Post", "Index", "Blog");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}

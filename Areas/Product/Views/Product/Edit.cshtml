@@ -1,9 +1,13 @@
 @model AppMvc.Net.Areas.Product.Models.CreateProductModel;
 @using AppMvc.Net.Areas.Product.Models;
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
     ViewData["Title"] = "Sửa sản phẩm";
     var list = ViewData["categories"] as MultiSelectList;
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
 <h1>@ViewData["Title"] </h1>
@@ -213,3 +217,10 @@
     };
 }
 <partial name="_Summernote"model="summernote"/>
+@{
+    adminSidebarService.SetActive("Product", "Index", "Product");
+}
+@section Sidebar 
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+}

@@ -1,10 +1,14 @@
 @model AppMvc.Net.Models.Category
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
     ViewData["Title"] = "Xóa chuyên mục";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>@ViewData["Title"]</h1>
+@* <h1>@ViewData["Title"]</h1> *@
 
 <h3>Có chắc chắn xóa?</h3>
 <div>
@@ -42,3 +46,12 @@
         <a asp-action="Index">Danh sách chuyên mục blog</a>
     </form>
 </div>
+
+@{
+    adminSidebarService.SetActive("Category", "Index", "Blog");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}

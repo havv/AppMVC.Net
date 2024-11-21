@@ -3,11 +3,13 @@ using System.Net;
 using App.Data;
 using App.Services;
 using AppMvc.Net.ExtendMethods;
+using AppMvc.Net.Menu;
 using AppMvc.Net.Models;
 using AppMvc.Net.Services;
 using AppMVC.Net.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Constraints;
@@ -110,6 +112,10 @@ builder.Services.AddAuthorization(options =>
 
 });
 builder.Services.AddTransient<CartService>() ;
+builder.Services.AddTransient<AdminSidebarService>() ;
+builder.Services.AddTransient<IActionContextAccessor, ActionContextAccessor>() ;
+
+
 //Thiet lap cau hinh cho razor engine 
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {

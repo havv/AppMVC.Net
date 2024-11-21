@@ -1,13 +1,15 @@
 @model AppMvc.Net.Models.Post
+@inject AppMvc.Net.Menu.AdminSidebarService adminSidebarService
+
 
 @{
     ViewData["Title"] = @Model.Title;
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+
 }
 
-<h1>@ViewData["Title"]</h1>
 
 <div>
-    <hr />
     <dl class="row">
   
         <dt class = "col-sm-2">
@@ -56,6 +58,14 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.PostId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.PostId">Sửa bài viết</a> |
+    <a asp-action="Index">Danh sách bài viết</a>
 </div>
+@{
+    adminSidebarService.SetActive("Post", "Index", "Blog");
+}
+@section Sidebar
+{
+    @Html.Raw(adminSidebarService.renderHtml())
+
+}
