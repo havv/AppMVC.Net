@@ -1,0 +1,26 @@
+{
+  "name": "appmvc.net",
+  "version": "1.0.0",
+  "description": "- La 1 lop ke thua tu lop controller : Microsoft.AspNetCore.Mvc\r - Action trong controller la mot phuong thuc public (ko dc static)\r - Action tra ve bat ky kieu du lieu nao, thuong la IActionResult\r - Cac dich vu inject vao controller qua ham tao",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-less": "^5.0.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-uglify": "^3.0.2",
+    "node-sass": "^9.0.0",
+    "postcss": "^8.4.47",
+    "rimraf": "^6.0.1",
+    "sass": "^1.79.1"
+  }
+}

@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:8090");
 builder.Services.AddDistributedMemoryCache();           // Đăng ký dịch vụ lưu cache trong bộ nhớ (Session sẽ sử dụng nó)
 builder.Services.AddSession(cfg => {                    // Đăng ký dịch vụ Session
     cfg.Cookie.Name = "appmvc";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
@@ -253,7 +254,7 @@ app.MapControllerRoute(
 //     id = 3
 // }
 );
-
+//app.Run("http://localhost:8090");
 //Thiết lập các attribute cho các controller 
 //[AcceptVerbs]
 //[Route]

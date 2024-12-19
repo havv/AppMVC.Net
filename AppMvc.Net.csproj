@@ -42,5 +42,11 @@
      <!-- <PackageReference Include="MySql.Data.EntityFramework" Version="9.0.0" /> -->
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
+  <ItemGroup> 
+    <Content Include="Uploads\**"> 
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content> 
+  </ItemGroup>
+
 
 </Project>
